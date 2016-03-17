@@ -25,7 +25,6 @@ encerra_aero(AEROPORTO aero);
 adiciona_voo(AEROPORTO aero);
 adiciona_rota(AEROPORTO aero)
 altera_capacidade(AEROPORTO aero);
-altera_capacidade(AEROPORTO aero);
 listagem_aero(void);
 numero_voos(AEROPORTO aero);
 abre_aero(AEROPORTO aero);
