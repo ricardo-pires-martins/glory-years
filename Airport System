@@ -20,8 +20,21 @@ typedef struct aeroporto {
 
 //          PROTOTIPOS            //
 
-
-
+adiciona_aero(AEROPORTO aero);
+encerra_aero(AEROPORTO aero);
+adiciona_voo(AEROPORTO aero);
+adiciona_rota(AEROPORTO aero)
+altera_capacidade(AEROPORTO aero);
+altera_capacidade(AEROPORTO aero);
+listagem_aero(void);
+numero_voos(AEROPORTO aero);
+abre_aero(AEROPORTO aero);
+aero_mais_voos(void);
+aero_mais_conectado(void);
+remove_voo(AEROPORTO aero);
+remove_voo_ida_volta(AEROPORTO aero);
+popularidade_voo(void);
+exit(void);
 
 //           CODIGO               //
 
