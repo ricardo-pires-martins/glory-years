@@ -18,6 +18,9 @@ typedef struct aeroporto {
     int  estado;
     
 } AEROPORTO;
+//          VARIAVEIS             //
+
+#define MAX 1000
 
 //          PROTOTIPOS            //
 
@@ -40,7 +43,9 @@ numero_voos_aeroporto(int index);
 //           CODIGO               //
 
 int main() {
-
+    
+    int AEROPORTO aero[MAX]; // vetor de indices
+    int matriz [MAX][MAX]; // matriz dos voos
     char cmd;
     getchar(cmd);
 
