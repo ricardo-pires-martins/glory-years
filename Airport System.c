@@ -13,7 +13,7 @@
 
 typedef struct aeroporto {
 
-    char id;
+    char id[];
     int  capacidade;
     int  estado;
     
@@ -21,7 +21,7 @@ typedef struct aeroporto {
 
 //          PROTOTIPOS            //
 
-void adiciona_aero(AEROPORTO aero);
+void adiciona_aero(void);
 encerra_aero(AEROPORTO aero);
 adiciona_voo(AEROPORTO aero);
 adiciona_rota(AEROPORTO aero)
@@ -63,9 +63,21 @@ int main() {
 
 }
 
-adiciona_aero(AEROPORTO aero) {
-
-    scanf("%s %d", &aero.nome, &aero.capacidade);
+adiciona_aero(void) {
+    
+    char id[];
+    int capacidade;
+    
+    scanf("%s %d", &id, &capacidade);
+    
+    index = getindex(''); //estrutura vazia
+    
+    aero[index].id = id;
+    
+    aero[index].capacidade = capacidade;
+    
+    aero[index].estado = 1;
+    
 }
 
 encerra_aero(AEROPORTO aero) {
@@ -139,4 +151,18 @@ popularidade_voo() {
 exit() {
 
 
+}
+
+
+/* Funcoes Auxiliares */
+
+int getindex(char aero) {
+    
+    for (i=0; i < MAX; i++){
+        
+        if (strcmp(aero, aero.id[i]) == 0)
+            return i;
+    
+    return -1;
+    }
 }
