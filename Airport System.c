@@ -13,14 +13,15 @@
 
 typedef struct aeroporto {
 
-    char nome[4], chegada[4];
+    char id;
     int  capacidade;
-
-}; AEROPORTO
+    int  estado;
+    
+} AEROPORTO;
 
 //          PROTOTIPOS            //
 
-adiciona_aero(AEROPORTO aero);
+void adiciona_aero(AEROPORTO aero);
 encerra_aero(AEROPORTO aero);
 adiciona_voo(AEROPORTO aero);
 adiciona_rota(AEROPORTO aero)
