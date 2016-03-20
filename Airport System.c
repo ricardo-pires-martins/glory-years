@@ -13,19 +13,23 @@
 
 typedef struct aeroporto {
 
-    char id[];
+    char id;
     int  capacidade;
     int  estado;
     
 } AEROPORTO;
+//          VARIAVEIS             //
+
+#define MAX 1000
+
 
 //          PROTOTIPOS            //
 
-void adiciona_aero(void);
+void adiciona_aero(AEROPORTO aero);
 encerra_aero(AEROPORTO aero);
 adiciona_voo(AEROPORTO aero);
 adiciona_rota(AEROPORTO aero)
-altera_capacidade(void);
+altera_capacidade(AEROPORTO aero);
 listagem_aero(void);
 numero_voos(AEROPORTO aero);
 abre_aero(AEROPORTO aero);
@@ -35,12 +39,13 @@ remove_voo(AEROPORTO aero);
 remove_voo_ida_volta(AEROPORTO aero);
 popularidade_voo(void);
 exit(void);
-numero_voos_aeroporto(int index);
 
 //           CODIGO               //
 
 int main() {
-
+    
+    AEROPORTO vetor[MAX];
+    int matriz [MAX][MAX];
     char cmd;
     getchar(cmd);
 
@@ -64,21 +69,9 @@ int main() {
 
 }
 
-adiciona_aero(void) {
-    
-    char id[];
-    int capacidade;
-    
-    scanf("%s %d", &id, &capacidade);
-    
-    index = getindex(''); //estrutura vazia
-    
-    aero[index].id = id;
-    
-    aero[index].capacidade = capacidade;
-    
-    aero[index].estado = 1;
-    
+adiciona_aero(AEROPORTO aero) {
+
+    scanf("%s %d", &aero.nome, &aero.capacidade);
 }
 
 encerra_aero(AEROPORTO aero) {
@@ -99,19 +92,9 @@ adiciona_rota(AEROPORTO aero) {
 
 }
 
-altera_capacidade(void) {
+altera_capacidade(AEROPORTO aero) {
 
-    char id[];
-    int nova_capacidade;
-    
-    scanf("%s %d", &id, &nova_capacidade);
-    
-    index = getindex(char id);
-    
-    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto(index))
-        printf ("*Capacidade de %s inalterada", nome);
-    else
-        aero[index].capacidade += nova_capacidade;
+    scanf("%s %d", &aero.nome, &aero.capacidade);
 
 }
 
@@ -162,28 +145,4 @@ popularidade_voo() {
 exit() {
 
 
-}
-
-
-/* Funcoes Auxiliares */
-
-int getindex(char aero) {
-    
-    for (i=0; i < MAX; i++){
-        
-        if (strcmp(aero, aero.id[i]) == 0)
-            return i;
-    
-    return -1;
-    }
-}
-
-int numero_voos_aeroporto(int index) {
-    
-    int soma=0;
-    
-    for (i = 0; i < MAX; i++)
-        soma += matriz[i][index] + matriz[i][index];
-    
-    return soma;
 }
