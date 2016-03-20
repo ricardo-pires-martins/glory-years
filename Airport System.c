@@ -25,7 +25,7 @@ void adiciona_aero(void);
 encerra_aero(AEROPORTO aero);
 adiciona_voo(AEROPORTO aero);
 adiciona_rota(AEROPORTO aero)
-altera_capacidade(AEROPORTO aero);
+altera_capacidade(void);
 listagem_aero(void);
 numero_voos(AEROPORTO aero);
 abre_aero(AEROPORTO aero);
@@ -35,6 +35,7 @@ remove_voo(AEROPORTO aero);
 remove_voo_ida_volta(AEROPORTO aero);
 popularidade_voo(void);
 exit(void);
+numero_voos_aeroporto(int index);
 
 //           CODIGO               //
 
@@ -98,9 +99,19 @@ adiciona_rota(AEROPORTO aero) {
 
 }
 
-altera_capacidade(AEROPORTO aero) {
+altera_capacidade(void) {
 
-    scanf("%s %d", &aero.nome, &aero.capacidade);
+    char id[];
+    int nova_capacidade;
+    
+    scanf("%s %d", &id, &nova_capacidade);
+    
+    index = getindex(char id);
+    
+    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto(index))
+        printf ("*Capacidade de %s inalterada", nome);
+    else
+        aero[index].capacidade += nova_capacidade;
 
 }
 
@@ -165,4 +176,14 @@ int getindex(char aero) {
     
     return -1;
     }
+}
+
+int numero_voos_aeroporto(int index) {
+    
+    int soma=0;
+    
+    for (i = 0; i < MAX; i++)
+        soma += matriz[i][index] + matriz[i][index];
+    
+    return soma;
 }
