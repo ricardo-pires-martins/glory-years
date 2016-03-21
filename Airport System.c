@@ -33,14 +33,15 @@ listagem_aero(void);
 void numero_voos(void); //done
 void reabre_aero(void); //done
 aero_mais_voos(void);//done
-aero_mais_conectado(void);
+aero_mais_conectado(void);//done
 remove_voo(AEROPORTO aero); //done com falhas
 remove_voo_ida_volta(AEROPORTO aero); //done com falhas
 popularidade_voo(void);
 void exit(void); //done
 void numero_voos_aeroporto_partida(int index); //done
 void numero_voos_aeroporto_chegada(int index); //done
-void getindex(void); //done
+int getindex(char aero); //done
+int conexoes(int t);//done
 
 //           CODIGO               //
 
@@ -230,8 +231,18 @@ void aero_mais_voos(void) {
     
 }
 
-aero_mais_conectado() {
-
+void aero_mais_conectado(void) {
+    
+    int max = 0;
+    char aero_max[4];
+    
+    for(int i = 0; i < MAX; i++){
+        
+        if (conexoes(i) > conexoes(max))
+            max = i;
+    }
+    aero_max = aero[max].id;
+    printf(" Aeroporto com mais ligações %s:%d",aero_max,conexoes(max);
 
 }
 
@@ -337,4 +348,19 @@ int numero_voos_aeroporto_chegada(int index) {
         soma += matriz[i][index];
 
     return soma;
+}
+int conexoes(int t){
+    
+    int soma=0
+    
+    for(int i = 0; i < MAX; i++){
+        
+        if (matriz[t][i] > 0)
+            soma++;
+       
+        if (matriz[i][t] > 0)
+            soma++;
+    }
+    return soma;
+    
 }
