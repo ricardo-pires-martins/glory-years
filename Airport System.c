@@ -13,7 +13,7 @@
 
 typedef struct aeroporto {
 
-    char id[];
+    char id[4];
     int  capacidade;
     int  estado;
 
@@ -72,14 +72,14 @@ int main() {
 
 void adiciona_aero(void) {
 
-    char id[];
+    char id[4];
     int capacidade;
 
     scanf("%s %d", &id, &capacidade);
 
-    index = getindex(''); //estrutura vazia
+    index = getindex('\0'); //estrutura vazia
 
-    aero[index].id = id;
+    aero[index].id = id + '\0';
 
     aero[index].capacidade = capacidade;
 
@@ -89,12 +89,12 @@ void adiciona_aero(void) {
 
 void encerra_aero(void) {
 
-    char id[];
+    char id[4];
     int index;
 
     scanf("%s", &id);
 
-    index = getindex(char id[]);
+    index = getindex(char id);
 
     if (index == -1)
 
@@ -117,7 +117,7 @@ void encerra_aero(void) {
 
 void adiciona_voo_ida_volta(void) { //falta conditions
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -135,7 +135,7 @@ void adiciona_voo_ida_volta(void) { //falta conditions
 
 void adiciona_rota(void) {
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -154,7 +154,7 @@ void adiciona_rota(void) {
 
 void altera_capacidade(void) {
 
-    char id[];
+    char id[4];
     int nova_capacidade;
 
     scanf("%s %d", &id, &nova_capacidade);
@@ -175,6 +175,7 @@ listagem_aero() {
 
 void numero_voos(void) {
 
+    char id_partida[4], id_chegada[4];
     scanf("%s %s", &id_partida, &id_chegada);
 
     index_partida = getindex(id_partida);
@@ -198,11 +199,11 @@ void numero_voos(void) {
 
 void reabre_aero(void) {
 
-    char id[];
+    char id[4];
 
     scanf("%s", &id);
 
-    index = getindex(char id[]);
+    index = getindex(char id);
 
     if (index == -1)
         printf("*Aeroporto %s inexistente", id);
@@ -214,7 +215,7 @@ void reabre_aero(void) {
 void aero_mais_voos(void) {
 
     int i, max = numero_voos_aeroporto(0);
-    vazio = getindex('');
+    vazio = getindex('\0');
     for (i = 1; i < vazio; i++) {
         variavel = numero_voos_aeroporto(i);
         if (variavel > max)
@@ -274,7 +275,7 @@ void exit(void) {
 
     int soma = 0, vazio, numero_aero_abertos = 0;
 
-    vazio = getindex('')
+    vazio = getindex('\0')
 
     for (i = 0; i < vazio-1; i++) {
 
@@ -309,7 +310,7 @@ int numero_voos_aeroporto(int index) {
 
     int vazio, soma=0;
 
-    vazio = getindex('')
+    vazio = getindex('\0')
 
     for (i = 0; i < vazio-1 ; i++)
 
