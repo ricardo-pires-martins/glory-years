@@ -32,13 +32,14 @@ void altera_capacidade(void); //done
 listagem_aero(void);
 void numero_voos(void); //done
 void reabre_aero(void); //done
-aero_mais_voos(void);
+aero_mais_voos(void);//done
 aero_mais_conectado(void);
 remove_voo(AEROPORTO aero); //done com falhas
 remove_voo_ida_volta(AEROPORTO aero); //done com falhas
 popularidade_voo(void);
 void exit(void); //done
-void numero_voos_aeroporto(int index); //done
+void numero_voos_aeroporto_partida(int index); //done
+void numero_voos_aeroporto_chegada(int index); //done
 void getindex(void); //done
 
 //           CODIGO               //
@@ -48,7 +49,7 @@ int main() {
     int AEROPORTO aero[MAX]; // vetor de indices
     int matriz [MAX][MAX]; // matriz dos voos
     char cmd;
-    getchar(cmd);
+    getchar();
 
     switch (cmd) {
         case 'A': adiciona_aero(); break;
@@ -161,7 +162,7 @@ void altera_capacidade(void) {
 
     index = getindex(char id);
 
-    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto(index))
+    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto_partida(index)+ numero_voos_aeroporto_chegada(index))
         printf ("*Capacidade de %s inalterada", nome);
     else
         aero[index].capacidade += nova_capacidade;
@@ -212,13 +213,19 @@ void reabre_aero(void) {
 }
 
 void aero_mais_voos(void) {
-
-    int i, max = numero_voos_aeroporto(0);
+    
+    int i,max_index, max = numero_voos_aeroporto_partida(0) + numero_voos_aeroporto_chegada(0);
     vazio = getindex('');
     for (i = 1; i < vazio; i++) {
-        variavel = numero_voos_aeroporto(i);
-        if (variavel > max)
-            max = variavel; }
+        variavel = numero_voos_aeroporto_partida(i) + numero_voos_aeroporto_chegada(i);
+        if (variavel > max){
+            max = variavel; 
+            max_index = i;
+        }
+    }        
+    printf(" Aeroporto com mais rotas %d:%d", numero_voos_aeroporto_partida(max_index), numero_voos_aeroporto_partida(max_index))        
+    
+    
 }
 
 aero_mais_conectado() {
@@ -292,7 +299,7 @@ void exit(void) {
 
 }
 
-/* Funcoes Auxiliares */
+//              FUNCOES AUXILIARES        //
 
 int getindex(char aero) {
 
@@ -305,7 +312,7 @@ int getindex(char aero) {
     }
 }
 
-int numero_voos_aeroporto(int index) {
+int numero_voos_aeroporto_partida(int index) {
 
     int vazio, soma=0;
 
@@ -313,7 +320,19 @@ int numero_voos_aeroporto(int index) {
 
     for (i = 0; i < vazio-1 ; i++)
 
-        soma += matriz[i][index] + matriz[i][index];
+        soma += matriz[index][i];
+
+    return soma;
+}
+int numero_voos_aeroporto_chegada(int index) {
+
+    int vazio, soma=0;
+
+    vazio = getindex('')
+
+    for (i = 0; i < vazio-1 ; i++)
+
+        soma += matriz[i][index];
 
     return soma;
 }
