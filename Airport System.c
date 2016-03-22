@@ -48,7 +48,7 @@ int main() {
     int AEROPORTO aero[MAX]; // vetor de indices
     int matriz [MAX][MAX]; // matriz dos voos
     char cmd;
-    getchar(cmd);
+    getchar();
 
     switch (cmd) {
         case 'A': adiciona_aero(); break;
@@ -72,14 +72,14 @@ int main() {
 
 void adiciona_aero(void) {
 
-    char id[4];
+    char id[];
     int capacidade;
 
     scanf("%s %d", &id, &capacidade);
 
-    index = getindex('\0'); //estrutura vazia
+    index = getindex(''); //estrutura vazia
 
-    aero[index].id = id + '\0';
+    aero[index].id = id;
 
     aero[index].capacidade = capacidade;
 
@@ -89,12 +89,12 @@ void adiciona_aero(void) {
 
 void encerra_aero(void) {
 
-    char id[4];
-    int index;
+    char id[];
+    int index, i=0;
 
     scanf("%s", &id);
 
-    index = getindex(char id);
+    index = getindex(char id[]);
 
     if (index == -1)
 
@@ -102,7 +102,7 @@ void encerra_aero(void) {
 
     else {
 
-        for (i = 0; i < MAX; i++) {
+        for (i; i < MAX; i++) {
             for (j = 0; j < MAX; j++) {
 
                 matriz[i][j] = 0;
@@ -117,7 +117,7 @@ void encerra_aero(void) {
 
 void adiciona_voo_ida_volta(void) { //falta conditions
 
-    char id_partida[4], id_chegada[4];
+    char id_partida[], id_chegada[];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -135,7 +135,7 @@ void adiciona_voo_ida_volta(void) { //falta conditions
 
 void adiciona_rota(void) {
 
-    char id_partida[4], id_chegada[4];
+    char id_partida[], id_chegada[];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -154,7 +154,7 @@ void adiciona_rota(void) {
 
 void altera_capacidade(void) {
 
-    char id[4];
+    char id[];
     int nova_capacidade;
 
     scanf("%s %d", &id, &nova_capacidade);
@@ -175,7 +175,6 @@ listagem_aero() {
 
 void numero_voos(void) {
 
-    char id_partida[4], id_chegada[4];
     scanf("%s %s", &id_partida, &id_chegada);
 
     index_partida = getindex(id_partida);
@@ -199,11 +198,11 @@ void numero_voos(void) {
 
 void reabre_aero(void) {
 
-    char id[4];
+    char id[];
 
     scanf("%s", &id);
 
-    index = getindex(char id);
+    index = getindex(char id[]);
 
     if (index == -1)
         printf("*Aeroporto %s inexistente", id);
@@ -214,12 +213,15 @@ void reabre_aero(void) {
 
 void aero_mais_voos(void) {
 
-    int i, max = numero_voos_aeroporto(0);
-    vazio = getindex('\0');
-    for (i = 1; i < vazio; i++) {
+    int i = -1, max = numero_voos_aeroporto(0);
+    vazio = getindex('');
+    for (i; i < vazio; i++) {
         variavel = numero_voos_aeroporto(i);
         if (variavel > max)
-            max = variavel; }
+            max = variavel;
+        }
+
+    printf("*Aeroporto com mais ", );
 }
 
 aero_mais_conectado() {
@@ -273,19 +275,19 @@ popularidade_voo() {
 
 void exit(void) {
 
-    int soma = 0, vazio, numero_aero_abertos = 0;
+    int i = 0, j = 0, soma = 0, vazio, numero_aero_abertos = 0;
 
-    vazio = getindex('\0')
+    vazio = getindex('')
 
-    for (i = 0; i < vazio-1; i++) {
+    for (i; i < vazio-1; i++) {
 
         if (aero[i].estado == 1)
 
             numero_aero_abertos += 1; }
 
-    for (i = 0; i < vazio-1; i++)
+    for (i; i < vazio-1; i++)
 
-        for (j = 0; j < vazio-1; j++) {
+        for (j; j < vazio-1; j++) {
 
             soma += matriz[i][j]
 
@@ -296,8 +298,9 @@ void exit(void) {
 /* Funcoes Auxiliares */
 
 int getindex(char aero) {
+    int i = 0;
 
-    for (i=0; i < MAX; i++){
+    for (i ; i < MAX; i++){
 
         if (strcmp(aero, aero.id[i]) == 0)
             return i;
@@ -308,11 +311,11 @@ int getindex(char aero) {
 
 int numero_voos_aeroporto(int index) {
 
-    int vazio, soma=0;
+    int vazio, soma=0; i = 0;
 
-    vazio = getindex('\0')
+    vazio = getindex('')
 
-    for (i = 0; i < vazio-1 ; i++)
+    for (i; i < vazio-1 ; i++)
 
         soma += matriz[i][index] + matriz[i][index];
 
