@@ -296,7 +296,7 @@ void exit(void) {
 
     vazio = getindex('\0')
 
-    for (i = 0; i < vazio-1; i++) {
+    for (int i = 0; i < vazio-1; i++) {
 
         if (aero[i].estado == 1)
 
