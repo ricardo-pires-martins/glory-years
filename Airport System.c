@@ -32,14 +32,16 @@ void altera_capacidade(void); //done
 listagem_aero(void);
 void numero_voos(void); //done
 void reabre_aero(void); //done
-aero_mais_voos(void);
-aero_mais_conectado(void);
+aero_mais_voos(void);//done
+aero_mais_conectado(void);//done
 remove_voo(AEROPORTO aero); //done com falhas
 remove_voo_ida_volta(AEROPORTO aero); //done com falhas
 popularidade_voo(void);
 void exit(void); //done
-void numero_voos_aeroporto(int index); //done
-void getindex(void); //done
+void numero_voos_aeroporto_partida(int index); //done
+void numero_voos_aeroporto_chegada(int index); //done
+int getindex(char aero); //done
+int conexoes(int t);//done
 
 //           CODIGO               //
 
@@ -72,14 +74,14 @@ int main() {
 
 void adiciona_aero(void) {
 
-    char id[];
+    char id[4];
     int capacidade;
 
     scanf("%s %d", &id, &capacidade);
 
-    index = getindex(''); //estrutura vazia
+    index = getindex('\0'); //estrutura vazia
 
-    aero[index].id = id;
+    aero[index].id = id + '\0';
 
     aero[index].capacidade = capacidade;
 
@@ -89,12 +91,12 @@ void adiciona_aero(void) {
 
 void encerra_aero(void) {
 
-    char id[];
-    int index, i=0;
+    char id[4];
+    int index;
 
     scanf("%s", &id);
 
-    index = getindex(char id[]);
+    index = getindex(char id);
 
     if (index == -1)
 
@@ -102,7 +104,7 @@ void encerra_aero(void) {
 
     else {
 
-        for (i; i < MAX; i++) {
+        for (i = 0; i < MAX; i++) {
             for (j = 0; j < MAX; j++) {
 
                 matriz[i][j] = 0;
@@ -117,7 +119,7 @@ void encerra_aero(void) {
 
 void adiciona_voo_ida_volta(void) { //falta conditions
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -135,7 +137,7 @@ void adiciona_voo_ida_volta(void) { //falta conditions
 
 void adiciona_rota(void) {
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -154,14 +156,14 @@ void adiciona_rota(void) {
 
 void altera_capacidade(void) {
 
-    char id[];
+    char id[4];
     int nova_capacidade;
 
     scanf("%s %d", &id, &nova_capacidade);
 
     index = getindex(char id);
 
-    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto(index))
+    if (x == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto_partida(index)+ numero_voos_aeroporto_chegada(index))
         printf ("*Capacidade de %s inalterada", nome);
     else
         aero[index].capacidade += nova_capacidade;
@@ -174,7 +176,9 @@ listagem_aero() {
 }
 
 void numero_voos(void) {
-
+    
+    char id_partida[4], id_chegada[4];
+   
     scanf("%s %s", &id_partida, &id_chegada);
 
     index_partida = getindex(id_partida);
@@ -198,11 +202,11 @@ void numero_voos(void) {
 
 void reabre_aero(void) {
 
-    char id[];
+    char id[4];
 
     scanf("%s", &id);
 
-    index = getindex(char id[]);
+    index = getindex(char id);
 
     if (index == -1)
         printf("*Aeroporto %s inexistente", id);
@@ -212,26 +216,39 @@ void reabre_aero(void) {
 }
 
 void aero_mais_voos(void) {
-
-    int i = -1, max = numero_voos_aeroporto(0);
-    vazio = getindex('');
-    for (i; i < vazio; i++) {
-        variavel = numero_voos_aeroporto(i);
-        if (variavel > max)
-            max = variavel;
+    
+    int i,max_index, max = numero_voos_aeroporto_partida(0) + numero_voos_aeroporto_chegada(0);
+    vazio = getindex('\0');
+    for (i = 1; i < vazio; i++) {
+        variavel = numero_voos_aeroporto_partida(i) + numero_voos_aeroporto_chegada(i);
+        if (variavel > max){
+            max = variavel; 
+            max_index = i;
         }
-
-    printf("*Aeroporto com mais ", );
+    }        
+    printf(" Aeroporto com mais rotas %d:%d", numero_voos_aeroporto_partida(max_index), numero_voos_aeroporto_partida(max_index))        
+    
+    
 }
 
-aero_mais_conectado() {
-
+void aero_mais_conectado(void) {
+    
+    int max = 0;
+    char aero_max[4];
+    
+    for(int i = 0; i < MAX; i++){
+        
+        if (conexoes(i) > conexoes(max))
+            max = i;
+    }
+    aero_max = aero[max].id;
+    printf(" Aeroporto com mais ligações %s:%d",aero_max,conexoes(max);
 
 }
 
 void remove_voo(void) { // falta conditions
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -250,7 +267,7 @@ void remove_voo(void) { // falta conditions
 
 void remove_voo_ida_volta(void) { //falta conditions
 
-    char id_partida[], id_chegada[];
+    char id_partida[4], id_chegada[4];
 
     scanf("%s %s", &id_partida, &id_chegada);
 
@@ -275,19 +292,19 @@ popularidade_voo() {
 
 void exit(void) {
 
-    int i = 0, j = 0, soma = 0, vazio, numero_aero_abertos = 0;
+    int soma = 0, vazio, numero_aero_abertos = 0;
 
-    vazio = getindex('')
+    vazio = getindex('\0')
 
-    for (i; i < vazio-1; i++) {
+    for (int i = 0; i < vazio-1; i++) {
 
         if (aero[i].estado == 1)
 
             numero_aero_abertos += 1; }
 
-    for (i; i < vazio-1; i++)
+    for (i = 0; i < vazio-1; i++)
 
-        for (j; j < vazio-1; j++) {
+        for (j = 0; j < vazio-1; j++) {
 
             soma += matriz[i][j]
 
@@ -295,12 +312,11 @@ void exit(void) {
 
 }
 
-/* Funcoes Auxiliares */
+//              FUNCOES AUXILIARES        //
 
 int getindex(char aero) {
-    int i = 0;
 
-    for (i ; i < MAX; i++){
+    for (i=0; i < MAX; i++){
 
         if (strcmp(aero, aero.id[i]) == 0)
             return i;
@@ -309,15 +325,43 @@ int getindex(char aero) {
     }
 }
 
-int numero_voos_aeroporto(int index) {
+int numero_voos_aeroporto_partida(int index) {
 
-    int vazio, soma=0; i = 0;
+    int vazio, soma=0;
 
-    vazio = getindex('')
+    vazio = getindex('\0')
 
-    for (i; i < vazio-1 ; i++)
+    for (i = 0; i < vazio-1 ; i++)
 
-        soma += matriz[i][index] + matriz[i][index];
+        soma += matriz[index][i];
 
     return soma;
 }
+int numero_voos_aeroporto_chegada(int index) {
+
+    int vazio, soma=0;
+
+    vazio = getindex('\0')
+
+    for (i = 0; i < vazio-1 ; i++)
+
+        soma += matriz[i][index];
+
+    return soma;
+}
+int conexoes(int t){
+    
+    int soma=0
+    
+    for(int i = 0; i < MAX; i++){
+        
+        if (matriz[t][i] > 0)
+            soma++;
+       
+        if (matriz[i][t] > 0)
+            soma++;
+    }
+    return soma;
+    
+}
+
