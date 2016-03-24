@@ -181,13 +181,17 @@ void listagem_aero(void) {
 
         case 1 :
 
-        char ids[MAX][4];
-
-        for (i = 0; i < MAX; i++)
-
-            ids[i] = aero[i].id;
-
-            switch(strcmp(ids[i], ids[i++]))
+	int v[MAX]
+	int i, j;
+	for (i=0;i<MAX;i++){
+		int aux,min=i;
+		for(j=i+1;j<MAX;j++){
+			if(strcmp(aero[min].id,aero[j].id)>0){
+			min=j}
+		v[i] = min}
+	int i;
+	for(i=0;i<MAX;i++){
+		printf("%s:%d:%d:%d\n", aero[v[i]].id, aero[v[i]].capacidade, voosdepartida[v[i]], voosdechegada[v[i]])}
 
         case 2 :
 
