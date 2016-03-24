@@ -52,6 +52,9 @@ int conexoes(int index);//done
 int main() {
 
     char cmd;
+
+
+
     getchar();
 
     switch (cmd) {
@@ -99,7 +102,7 @@ void encerra_aero(void) {
 
     scanf(" %s", &id);
 
-    index = getindex(char id);
+    index = getindex(id);
 
     if (index == -1)
 
@@ -122,8 +125,8 @@ void adiciona_voo_ida_volta(void) {
 
     scanf(" %s %s", &id_partida, &id_chegada);
 
-    index_partida = getindex(char id_partida);
-    index_chegada = getindex(char id_chegada);
+    index_partida = getindex(id_partida);
+    index_chegada = getindex(id_chegada);
 
     if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_chegada(index_partida) + numero_voos_aeroporto_partida(index_partida) + 2 <= aero[index_partida].capacidade && numero_voos_aeroporto_chegada(index_chegada) + numero_voos_aeroporto_partida(index_chegada) + 2 <= aero[index_chegada].capacidade) {
         matriz[index_partida][index_chegada] += 1;
@@ -138,11 +141,11 @@ void adiciona_rota(void) {
 
     scanf(" %s %s", &id_partida, &id_chegada);
 
-    index_partida = getindex(char id_partida); // verifica a capacidade atual para voos de partida do aeroporto de partida
-    index_chegada = getindex(char id_chegada); // verifica a capacidade atual para voos de chegada do aeroporto de chegada
+    index_partida = getindex(id_partida);
+    index_chegada = getindex(id_chegada);
 
-    capacidade_partida = aero[index_partida].capacidade - numero_voos_aeroporto_chegada(index_partida);
-    capacidade_chegada = aero[index_chegada].capacidade - numero_voos_aeroporto_partida(index_chegada);
+    capacidade_partida = aero[index_partida].capacidade - numero_voos_aeroporto_chegada(index_partida); // verifica a capacidade atual para voos de partida do aeroporto de partida
+    capacidade_chegada = aero[index_chegada].capacidade - numero_voos_aeroporto_partida(index_chegada); // verifica a capacidade atual para voos de chegada do aeroporto de chegada
 
     if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_partida(index_partida) + 1 <= capacidade_partida && numero_voos_aeroporto_chegada(index_chegada) + 1 <= capacidade_chegada)
         matriz[index_partida][index_chegada] += 1;
@@ -156,7 +159,7 @@ void altera_capacidade(void) {
 
     scanf(" %s %d", &id, &nova_capacidade);
 
-    index = getindex(char id);
+    index = getindex(id);
 
     if (index == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto_partida(index) + numero_voos_aeroporto_chegada(index))
         printf ("*Capacidade de %s inalterada", nome);
@@ -170,10 +173,29 @@ void listagem_aero(void) {
     scanf(" %d", &variavel);
 
     switch (variavel) {
-        case 0 : for (i = 0; i < MAX; i++)
-                    printf("%s:%d:%d:%d\n", aero[i].id, aero[i].capacidade, numero_voos_aeroporto_partida(i), numero_voos_aeroporto_chegada(i));
+        case 0 :
+
+        for (i = 0; i < MAX; i++)
+
+            printf("%s:%d:%d:%d\n", aero[i].id, aero[i].capacidade, numero_voos_aeroporto_partida(i), numero_voos_aeroporto_chegada(i));
+
         case 1 :
+
+        char ids[MAX][4];
+
+        for (i = 0; i < MAX; i++)
+
+            ids[i] = aero[i].id;
+
+            switch(strcmp(ids[i], ids[i++]))
+
         case 2 :
+
+            int nvoos[MAX];
+
+            for (i = 0; i < MAX; i++) {
+
+                nvoos[i] = numero_voos_aeroporto_chegada[i] + numero_voos_aeroporto_partida[i]; }
     }
 
 void numero_voos(void) {
@@ -208,7 +230,7 @@ void reabre_aero(void) {
 
     scanf(" %s", &id);
 
-    index = getindex(char id);
+    index = getindex(id);
 
     if (index == -1)
         printf("*Aeroporto %s inexistente", id);
@@ -251,8 +273,8 @@ void remove_voo(void) {
 
     scanf(" %s %s", &id_partida, &id_chegada);
 
-    index_partida = getindex(char id_partida);
-    index_chegada = getindex(char id_chegada);
+    index_partida = getindex(id_partida);
+    index_chegada = getindex(id_chegada);
 
     if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0)
         matriz[index_partida][index_chegada] -= 1;
@@ -266,8 +288,8 @@ void remove_voo_ida_volta(void) {
 
     scanf(" %s %s", &id_partida, &id_chegada);
 
-    index_partida = getindex(char id_partida);
-    index_chegada = getindex(char id_chegada);
+    index_partida = getindex(id_partida);
+    index_chegada = getindex(id_chegada);
 
     if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0 && matriz[index_chegada][index_partida > 0]) {
         matriz[index_partida][index_chegada] -= 1;
@@ -325,7 +347,7 @@ int getindex(char id) {
 
 	for (i=0; i < MAX; i++){
 
-        if (strcmp(aero, aero.id[i]) == 0)
+        if (strcmp(id, aero[i].id) == 0)
             return i;
 
     return -1; }
@@ -361,10 +383,17 @@ int conexoes(int index) {
 
     for(i = 0; i < MAX; i++) {
 
-        if (matriz[t][i] > 0)
+        if (matriz[index][i] > 0)
             soma++;
 
-        if (matriz[i][t] > 0)
+        if (matriz[i][index] > 0)
             soma++; }
 
     return soma; }
+
+void inicialização(char vetor) {
+
+    int i;
+
+    for (i = 0; i < MAX; i++)
+        vetor[i].id = '\0'; }
