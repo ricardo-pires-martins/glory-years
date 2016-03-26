@@ -4,29 +4,48 @@
 //Ricardo Oliveira, 84759
 //Ricardo Martins, 84761
 
+////////////////////////////////////
 //        BIBLIOTECAS             //
+////////////////////////////////////
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
+////////////////////////////////////
 //        ESTRUTURAS              //
+////////////////////////////////////
 
 typedef struct aeroporto {
 
-    char id[4];
-    int  capacidade;
-    int  estado;
+	char id[4];
+	int  capacidade;
+	int  estado;
 
 } AEROPORTO;
 
+typedef struct lista_voos {
+
+	int voos;
+	int aeros;
+
+} LST_VOO;
+
+////////////////////////////////////
 //          VARIAVEIS             //
+////////////////////////////////////
 
 #define MAX 1000
 
 AEROPORTO aero[MAX]; // vetor de indices
-int matriz [MAX][MAX]; // matriz dos voos
+int matriz[MAX][MAX]; // matriz dos voos
+LST_VOO nvoos[MAX];
 
+int N_AEROPORTOS = 0;
+
+////////////////////////////////////
 //          PROTOTIPOS            //
+////////////////////////////////////
 
 void adiciona_aero(void); //done
 void encerra_aero(void); //done
@@ -44,364 +63,444 @@ void popularidade_voo(void); //done
 void saida(void); //done
 int numero_voos_aeroporto_partida(int index); //done
 int numero_voos_aeroporto_chegada(int index); //done
-int getindex(char id); //done
+int get_index(char id[]); //done
 int conexoes(int index);//done
 
-//           CODIGO               //
+//////////////////////////////
+//			CODIGO			//
+//////////////////////////////
 
 int main() {
 
-    char cmd;
-
-
-
-    getchar();
-
-    switch (cmd) {
-        case 'A': adiciona_aero(); break;
-        case 'C': encerra_aero(); break;
-        case 'F': adiciona_voo_ida_volta(); break;
-        case 'G': adiciona_rota(); break;
-        case 'I': altera_capacidade(); break;
-        case 'L': listagem_aero(); break;
-        case 'N': numero_voos(); break;
-        case 'O': reabre_aero(); break;
-        case 'P': aero_mais_voos(); break;
-        case 'Q': aero_mais_conectado(); break;
-        case 'R': remove_voo(); break;
-        case 'S': remove_voo_ida_volta(); break;
-        case 'V': popularidade_voo(); break;
-        case 'X': saida(); break;
-        default : printf("*Comando Invalido");
-    }
-	return 0;
-
+	char cmd;
+	while (1) {
+		printf("Introduza um comando (X para sair) : ");
+		cmd = getchar();
+		switch (cmd) {
+			case 'A': adiciona_aero(); break;
+			case 'C': encerra_aero(); break;
+			case 'F': adiciona_voo_ida_volta(); break;
+			case 'G': adiciona_rota(); break;
+			case 'I': altera_capacidade(); break;
+			case 'L': listagem_aero(); break;
+			case 'N': numero_voos(); break;
+			case 'O': reabre_aero(); break;
+			case 'P': aero_mais_voos(); break;
+			case 'Q': aero_mais_conectado(); break;
+			case 'R': remove_voo(); break;
+			case 'S': remove_voo_ida_volta(); break;
+			case 'V': popularidade_voo(); break;
+			case 'X': 
+				saida();
+				return EXIT_SUCCESS;
+				break;
+			default: printf("*Comando Invalido");
+		}
+		getchar();
+	}
+	return EXIT_FAILURE;
 }
 
-void adiciona_aero(void) {
+//////////////////////////////////////////
+//			FUNCOES AUXILIARES			//
+//////////////////////////////////////////
 
-    char id[4];
-    int capacidade, index;
+/*
+	get_index :
+		devolve o indice do vector de aeroportos cujo identificador
+		é passado como parametro
+	parametros :
+		id - identificador de aeroporto
+	retorna  :
+		um inteiro que representa um indice do vector de aeroportos
+		caso não exista o identificador devolve -1
+*/
+int get_index(char id[]) { //corrigida
 
-    scanf(" %s %d", &id, &capacidade);
+	int i;
 
-    index = getindex('\0'); //estrutura vazia
+	for (i = 0; i < N_AEROPORTOS; i++) {
 
-    if (capacidade > 0) {
+		if (strcmp(id, aero[i].id) == 0)
+			return i;
+	}
 
-        aero[index].id = id + '\0';
+	return -1;
+}
 
-        aero[index].capacidade = capacidade;
+/*
+	numero_voos_aeroporto_partida :
+		devolve o numero de voos que partem de um aeroporto
+	parametros:
+		indice do aeroportos
+	retorna:
+		numero de voos de partida
+*/
+int numero_voos_aeroporto_partida(int index) { //corrigida
 
-        aero[index].estado = 1; } }
+	int i, soma = 0;
 
-void encerra_aero(void) {
+	for (i = 0; i < N_AEROPORTOS; i++)
+		soma += matriz[index][i];
 
-    char id[4];
-    int index , i, j;
+	return soma;
+}
 
-    scanf(" %s", &id);
+/*
+	numero_voos_aeroporto_chegada :
+		devolve o numero de voos que chegam a um aeroporto
+	parametros:
+		indice do aeroporto
+	retorna:
+		numero de voos de chegada
+*/
+int numero_voos_aeroporto_chegada(int index) { //corrigida
 
-    index = getindex(id);
+	int i, soma = 0;
 
-    if (index == -1)
+	for (i = 0; i < N_AEROPORTOS; i++)
+		soma += matriz[i][index];
 
-        printf("*Aeroporto %s inexistente", id);
+	return soma;
+}
 
-    else {
+/*
+	conexoes : 
+		devolve o numero de ligacoes de um aeroporto
+	parametros:
+		indice do aeroporto
+	retorna:
+		numero de ligacoes
+		
+*/
+int conexoes(int index) {
 
-        for (i = 0; i < MAX; i++) {
-            for (j = 0; j < MAX; j++) {
+	int soma = 0, i;
 
-                matriz[i][j] = 0;
-                matriz[j][i] = 0; } } }
+	for (i = 0; i < N_AEROPORTOS; i++) {
 
-    aero[index].estado == 0; }
+		if (matriz[index][i] > 0)
+			soma++;
+		else {
+			if (matriz[i][index] > 0)
+				soma++;
+		}
+	}
 
-void adiciona_voo_ida_volta(void) {
+	return soma;
+}
 
-    char id_partida[4], id_chegada[4];
-    int  index_partida, index_chegada;
+//////////////////////////////////
+//			COMANDOS			//
+//////////////////////////////////
 
-    scanf(" %s %s", &id_partida, &id_chegada);
+void adiciona_aero(void) { //corrigida
 
-    index_partida = getindex(id_partida);
-    index_chegada = getindex(id_chegada);
+	char id[4];
+	int capacidade, index;
 
-    if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_chegada(index_partida) + numero_voos_aeroporto_partida(index_partida) + 2 <= aero[index_partida].capacidade && numero_voos_aeroporto_chegada(index_chegada) + numero_voos_aeroporto_partida(index_chegada) + 2 <= aero[index_chegada].capacidade) {
-        matriz[index_partida][index_chegada] += 1;
-        matriz[index_chegada][index_partida] += 1; }
-    else
-        printf("*Impossivel adicionar voo RT %s %s", id_partida, id_chegada); }
+	scanf(" %s %d", id, &capacidade);
+	index = N_AEROPORTOS; // proximo indice
 
-void adiciona_rota(void) {
+	if (capacidade > 0) {
+		strcpy(aero[index].id, strcat(id, "\0"));
+		aero[index].capacidade = capacidade;
+		aero[index].estado = 1;
+		N_AEROPORTOS++;
+	}
+}
 
-    char id_partida[4], id_chegada[4];
-    int index_partida, index_chegada;
+void encerra_aero(void) { //corrigida
 
-    scanf(" %s %s", &id_partida, &id_chegada);
+	char id[4];
+	int index, i, j;
 
-    index_partida = getindex(id_partida);
-    index_chegada = getindex(id_chegada);
+	scanf(" %s", id);
 
-    capacidade_partida = aero[index_partida].capacidade - numero_voos_aeroporto_chegada(index_partida); // verifica a capacidade atual para voos de partida do aeroporto de partida
-    capacidade_chegada = aero[index_chegada].capacidade - numero_voos_aeroporto_partida(index_chegada); // verifica a capacidade atual para voos de chegada do aeroporto de chegada
+	index = get_index(id);
 
-    if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_partida(index_partida) + 1 <= capacidade_partida && numero_voos_aeroporto_chegada(index_chegada) + 1 <= capacidade_chegada)
-        matriz[index_partida][index_chegada] += 1;
-    else
-        printf("*Impossivel adicionar voo %s %s", id_partida, id_chegada); }
+	if (index == -1)
 
-void altera_capacidade(void) {
+		printf("*Aeroporto %s inexistente", id);
 
-    char id[4];
-    int index, nova_capacidade;
+	else {
 
-    scanf(" %s %d", &id, &nova_capacidade);
+		aero[index].estado = 0;
 
-    index = getindex(id);
+		for (i = 0; i < N_AEROPORTOS; i++) {
+			for (j = 0; j < N_AEROPORTOS; j++) {
 
-    if (index == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto_partida(index) + numero_voos_aeroporto_chegada(index))
-        printf ("*Capacidade de %s inalterada", nome);
-    else
-        aero[index].capacidade += nova_capacidade; }
+				matriz[i][j] = 0;
+				matriz[j][i] = 0;
+			}
+		}
+	}
+}
+
+void adiciona_voo_ida_volta(void) { //corrigida
+
+	char id_partida[4], id_chegada[4];
+	int  index_partida, index_chegada;
+
+	scanf(" %s %s", id_partida, id_chegada);
+
+	index_partida = get_index(id_partida);
+	index_chegada = get_index(id_chegada);
+
+	if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_chegada(index_partida) + numero_voos_aeroporto_partida(index_partida) + 2 <= aero[index_partida].capacidade && numero_voos_aeroporto_chegada(index_chegada) + numero_voos_aeroporto_partida(index_chegada) + 2 <= aero[index_chegada].capacidade) {
+		matriz[index_partida][index_chegada] += 1;
+		matriz[index_chegada][index_partida] += 1;
+	}
+	else
+		printf("*Impossivel adicionar voo RT %s %s", id_partida, id_chegada);
+}
+
+void adiciona_rota(void) { //corrigida
+
+	char id_partida[4], id_chegada[4];
+	int index_partida, index_chegada, capacidade_partida, capacidade_chegada;
+
+	scanf(" %s %s", id_partida, id_chegada);
+
+	index_partida = get_index(id_partida);
+	index_chegada = get_index(id_chegada);
+
+	capacidade_partida = aero[index_partida].capacidade - numero_voos_aeroporto_chegada(index_partida); // verifica a capacidade atual para voos de partida do aeroporto de partida
+	capacidade_chegada = aero[index_chegada].capacidade - numero_voos_aeroporto_partida(index_chegada); // verifica a capacidade atual para voos de chegada do aeroporto de chegada
+
+	if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && numero_voos_aeroporto_partida(index_partida) + 1 <= capacidade_partida && numero_voos_aeroporto_chegada(index_chegada) + 1 <= capacidade_chegada)
+		matriz[index_partida][index_chegada] += 1;
+	else
+		printf("*Impossivel adicionar voo %s %s", id_partida, id_chegada);
+}
+
+void altera_capacidade(void) { //corrigida
+
+	char id[4];
+	int index, nova_capacidade;
+
+	scanf(" %s %d", id, &nova_capacidade);
+
+	index = get_index(id);
+
+	if (index == -1 || aero[index].estado == 0 || aero[index].capacidade + nova_capacidade < numero_voos_aeroporto_partida(index) + numero_voos_aeroporto_chegada(index))
+		printf("*Capacidade de %s inalterada", id);
+	else
+		aero[index].capacidade += nova_capacidade;
+}
 
 void listagem_aero(void) {
 
-    int variavel, i;
+	int variavel, i;
 
-    scanf(" %d", &variavel);
 
-    switch (variavel) {
-        case 0 :
+	scanf(" %d", &variavel);
 
-        for (i = 0; i < MAX; i++)
+	switch (variavel) {
 
-            printf("%s:%d:%d:%d\n", aero[i].id, aero[i].capacidade, numero_voos_aeroporto_partida(i), numero_voos_aeroporto_chegada(i));
+	case 0:
 
-        case 1 :
+		for (i = 0; i < N_AEROPORTOS; i++)
 
-        int v[MAX];
-	int i, j;
-	for (i=0;i<MAX;i++){
-		int aux,min=i;
-		for(j=i+1;j<MAX;j++){
-			if(strcmp(aero[min].id,aero[j].id)>0)
-				min=j
+			printf("%s:%d:%d:%d\n", aero[i].id, aero[i].capacidade, numero_voos_aeroporto_partida(i), numero_voos_aeroporto_chegada(i)); break;
+
+	case 1:
+
+		int v[MAX], i, j;
+
+		for (i = 0; i < N_AEROPORTOS; i++) {
+
+			int min = i;
+
+			for (j = i + 1; j < N_AEROPORTOS; j++) {
+
+				if (strcmp(aero[min].id, aero[j].id) > 0)
+
+					min = j;
+			}
+
+			v[i] = min;
 		}
-	v[i] = min 
+
+		for (i = 0; i < N_AEROPORTOS; i++) {
+
+			printf("%s:%d:%d:%d\n", aero[v[i]].id, aero[v[i]].capacidade, numero_voos_aeroporto_partida(v[i]), numero_voos_aeroporto_chegada(v[i]));
+		}
+
+	case 2:
+
+		for (i = 0; i < MAX; i++) {
+
+			nvoos[i].voos = numero_voos_aeroporto_partida(i) + numero_voos_aeroporto_chegada(i);
+			nvoos[i].aeros += 1;
+
+			for (j = 0; j < MAX; j++) {
+
+				if (nvoos[i].voos == nvoos[j].voos) {
+
+					nvoos[j].voos = -1;
+					nvoos[i].aeros += nvoos[j].aeros;
+				}
+
+				printf("%d:%d\n", nvoos[i].voos, nvoos[i].aeros);
+			}
+		}
 	}
-	
-	int i;
-	for(i=0;i<MAX;i++){
-		printf("%s:%d:%d:%d\n", aero[v[i]].id, aero[v[i]].capacidade, voosdepartida[v[i]], voosdechegada[v[i]])
+}
+
+void numero_voos(void) { //corrigida
+
+	char id_partida[4], id_chegada[4];
+	int index_partida, index_chegada, voos_partida, voos_chegada;
+
+	scanf(" %s %s", id_partida, id_chegada);
+
+	index_partida = get_index(id_partida);
+	index_chegada = get_index(id_chegada);
+
+	if (index_partida == -1) {
+		printf("*Aeroporto %s inexistente", id_partida);
 	}
-        
-        case 2 :
 
-            int nvoos[MAX];
+	else if (index_chegada == -1) {
+		printf("*Aeroporto %s inexistente", id_chegada);
+	}
 
-            for (i = 0; i < MAX; i++) {
+	else if (index_partida == -1 && index_chegada == -1) {
+		printf("*Aeroporto %s inexistente /n *Aeroporto %s inexistente", id_partida, id_chegada);
+	}
 
-                nvoos[i] = numero_voos_aeroporto_chegada[i] + numero_voos_aeroporto_partida[i]; }
-    }
+	else {
+		voos_chegada = matriz[index_partida][index_chegada];
+		voos_partida = matriz[index_chegada][index_partida];
 
-void numero_voos(void) {
+		printf("%d:%d", voos_partida, voos_chegada);
+	}
+}
 
-    char id_partida[4], id_chegada[4];
-    int index_partida, index_chegada;
-
-    scanf(" %s %s", &id_partida, &id_chegada);
-
-    index_partida = getindex(id_partida);
-    index_chegada = getindex(id_chegada);
-
-    if (index_partida == -1) {
-        printf("*Aeroporto %s inexistente", id_partida); }
-
-    else if (index_chegada == -1) {
-        printf("*Aeroporto %s inexistente", id_chegada); }
-
-    else if (index_partida == -1 && index_chegada == -1) {
-        printf("*Aeroporto %s inexistente /n *Aeroporto %s inexistente", id_partida, id_chegada);}
-
-    else {
-        voos_chegada = matriz[index_partida][index_chegada];
-        voos_partida = matriz[index_chegada][index_partida];
-
-        printf("%d:%d", voos_partida, voos_chegada); } }
-
-void reabre_aero(void) {
+void reabre_aero() { //corrigida
 
 	int index;
-    char id[4];
+	char id[4];
 
-    scanf(" %s", &id);
+	scanf(" %s", id);
 
-    index = getindex(id);
+	index = get_index(id);
 
-    if (index == -1)
-        printf("*Aeroporto %s inexistente", id);
-    else
-        aero[index].estado = 1; }
+	if (index == -1)
+		printf("*Aeroporto %s inexistente", id);
+	else
+		aero[index].estado = 1;
+}
 
-void aero_mais_voos(void) {
+void aero_mais_voos(void) { //corrigida
 
-    int i, vazio, max_index, max = numero_voos_aeroporto_partida(0) + numero_voos_aeroporto_chegada(0);
+	int i, variavel, max_index, max = numero_voos_aeroporto_partida(0) + numero_voos_aeroporto_chegada(0);
 
-    vazio = getindex('\0');
+	for (i = 1; i < N_AEROPORTOS; i++) {
 
-    for (i = 1; i < vazio; i++) {
+		variavel = numero_voos_aeroporto_partida(i) + numero_voos_aeroporto_chegada(i);
 
-        variavel = numero_voos_aeroporto_partida(i) + numero_voos_aeroporto_chegada(i);
+		if (variavel > max) {
 
-        if (variavel > max){
+			max = variavel;
 
-            max = variavel;
+			max_index = i;
+		}
+	}
 
-            max_index = i; } }
+	printf(" Aeroporto com mais rotas %s:%d:%d", aero[max_index].id, numero_voos_aeroporto_partida(max_index), numero_voos_aeroporto_partida(max_index));
+}
 
-    printf(" Aeroporto com mais rotas %s:%d:%d", aero[max_index].id, numero_voos_aeroporto_partida(max_index), numero_voos_aeroporto_partida(max_index)); }
+void aero_mais_conectado(void) { //corrigida
 
-void aero_mais_conectado(void) {
+	int i, max = 0;
 
-    int i, max = 0;
+	for (i = 0; i < N_AEROPORTOS; i++) {
 
-    for(i = 0; i < MAX; i++){
+		if (conexoes(i) > conexoes(max))
+			max = i;
+	}
 
-        if (conexoes(i) > conexoes(max))
-            max = i; }
+	printf(" Aeroporto com mais ligações %s:%d", aero[max].id, conexoes(max));
+}
 
-    printf(" Aeroporto com mais ligações %s:%d", aero[max].id, conexoes(max); }
+void remove_voo(void) { //corrigida
 
-void remove_voo(void) {
+	char id_partida[4], id_chegada[4];
+	int index_partida, index_chegada;
 
-    char id_partida[4], id_chegada[4];
-    int index_partida, index_chegada;
+	scanf(" %s %s", id_partida, id_chegada);
 
-    scanf(" %s %s", &id_partida, &id_chegada);
+	index_partida = get_index(id_partida);
+	index_chegada = get_index(id_chegada);
 
-    index_partida = getindex(id_partida);
-    index_chegada = getindex(id_chegada);
+	if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0)
+		matriz[index_partida][index_chegada] -= 1;
+	else
+		printf("*Impossivel remover voo %s %s", id_partida, id_chegada);
+}
 
-    if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0)
-        matriz[index_partida][index_chegada] -= 1;
-    else
-        printf("*Impossivel remover voo %s %s", id_partida, id_chegada); }
+void remove_voo_ida_volta(void) { //corrigida
 
-void remove_voo_ida_volta(void) {
+	char id_partida[4], id_chegada[4];
+	int index_partida, index_chegada;
 
-    char id_partida[4], id_chegada[4];
-    int index_partida, index_chegada;
+	scanf(" %s %s", id_partida, id_chegada);
 
-    scanf(" %s %s", &id_partida, &id_chegada);
+	index_partida = get_index(id_partida);
+	index_chegada = get_index(id_chegada);
 
-    index_partida = getindex(id_partida);
-    index_chegada = getindex(id_chegada);
+	if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0 && matriz[index_chegada][index_partida > 0]) {
+		matriz[index_partida][index_chegada] -= 1;
+		matriz[index_chegada][index_partida] -= 1;
+	}
+	else
+		printf("*Impossivel remover voo RT %s %s", id_partida, id_chegada);
+}
 
-    if (index_chegada != -1 && index_partida != -1 && aero[index_chegada].estado == 1 && aero[index_partida].estado == 1 && matriz[index_partida][index_chegada] > 0 && matriz[index_chegada][index_partida > 0]) {
-        matriz[index_partida][index_chegada] -= 1;
-        matriz[index_chegada][index_partida] -= 1; }
-    else
-        printf("*Impossivel remover voo RT %s %s", id_partida, id_chegada); }
+void popularidade_voo(void) { //corrigida
 
-void popularidade_voo(void) {
+	int i, j, max_partidas, max_chegadas, aero_partidas, aero_chegadas;
 
-    int i, j, vazio, max_partidas, max_chegadas, aero_partidas, aero_chegadas;
+	max_partidas = 0;
+	max_chegadas = 0;
 
-    vazio = getindex('\0');
-    max_partidas = 0;
-    max_chegadas = 0;
+	for (i = 0; i < N_AEROPORTOS; i++) {
+		if (numero_voos_aeroporto_partida(i) > max_partidas) {
+			max_partidas += numero_voos_aeroporto_partida(i);
+			aero_partidas = i;
+		}
+	}
 
-    for (i = 0; i < vazio; i++) {
-        if (numero_voos_aeroporto_partida(i) > max_partidas) {
-            max_partidas += numero_voos_aeroporto_partida(i);
-            aero_partidas = i; } }
+	for (j = 0; j < N_AEROPORTOS; j++) {
+		if (numero_voos_aeroporto_chegada(j) > max_chegadas) {
+			max_chegadas += numero_voos_aeroporto_chegada(j);
+			aero_chegadas = j;
+		}
+	}
 
-    for (j = 0; j < MAX; j++) {
-        if (numero_voos_aeroporto_chegada(j) > max_chegadas) {
-            max_chegadas += numero_voos_aeroporto_chegada(j);
-            aero_chegadas = j; } }
-
-    printf("%s:%s:%d:%d\n", aero[i].id, aero[j].id, numero_voos_aeroporto_partidas(i), numero_voos_aeroporto_chegada(j)); }
+	printf("%s:%s:%d:%d\n", aero[aero_partidas].id, aero[aero_chegadas].id, numero_voos_aeroporto_partida(i), numero_voos_aeroporto_chegada(j));
+}
 
 void saida(void) {
 
-    int i, j, soma = 0, vazio, numero_aero_abertos = 0;
+	int i, j, numero_voos = 0, numero_aero_abertos = 0;
 
-    vazio = getindex('\0');
+	for (i = 0; i < N_AEROPORTOS; i++) {
 
-    for (i = 0; i < vazio-1; i++) {
+		if (aero[i].estado == 1)
 
-        if (aero[i].estado == 1)
+			numero_aero_abertos += 1;
+	}
 
-            numero_aero_abertos += 1; }
+	for (i = 0; i < N_AEROPORTOS; i++) {
 
-    for (i = 0; i < vazio-1; i++) {
+		for (j = 0; j < N_AEROPORTOS; j++) {
 
-        for (j = 0; j < vazio-1; j++) {
+			numero_voos += matriz[i][j];
+		}
+	}
 
-            soma += matriz[i][j];
-
-    printf("%d:%d", numero_aero_abertos, soma); } }
-
+	printf("%d:%d", numero_aero_abertos, numero_voos);
 }
-
-//              FUNCOES AUXILIARES        //
-
-int getindex(char id) {
-
-	int i;
-
-	for (i=0; i < MAX; i++){
-
-        if (strcmp(id, aero[i].id) == 0)
-            return i;
-
-    return -1; }
-}
-
-int numero_voos_aeroporto_partida(int index) {
-
-    int vazio, soma=0;
-
-    vazio = getindex('\0');
-
-    for (i = 0; i < vazio-1 ; i++)
-
-        soma += matriz[index][i];
-
-    return soma; }
-
-int numero_voos_aeroporto_chegada(int index) {
-
-    int vazio, soma = 0;
-
-    vazio = getindex('\0');
-
-    for (i = 0; i < vazio-1 ; i++)
-
-        soma += matriz[i][index];
-
-    return soma; }
-
-int conexoes(int index) {
-
-    int soma = 0, i;
-
-    for(i = 0; i < MAX; i++) {
-
-        if (matriz[index][i] > 0)
-            soma++;
-
-        if (matriz[i][index] > 0)
-            soma++; }
-
-    return soma; }
-
-void inicialização(char vetor) {
-
-    int i;
-
-    for (i = 0; i < MAX; i++)
-        vetor[i].id = '\0'; }
